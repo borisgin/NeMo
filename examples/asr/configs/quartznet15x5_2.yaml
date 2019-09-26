@@ -32,7 +32,7 @@ SpectrogramAugmentation:
 JasperEncoder:
     activation: "relu"
     conv_mask: true
-    normalization_mode: "instance"
+#    normalization_mode: "batch"
 
     jasper:
       - filters: 256
