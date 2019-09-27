@@ -24,7 +24,11 @@ def seq_collate_fn(batch):
                                    dtype=torch.float)
         audio_lengths = []
         for i, s in enumerate(batch):
-            audio_signal[i].narrow(0, 0, s[0].size(0)).copy_(s[0])
+            repeat_num = (max_audio_len - 1) // s[0].size(0)
+            padded_audio = s[0].repeat(1 + repeat_num).narrow(
+                0, 0, max_audio_len)
+            audio_signal[i].copy_(padded_audio)
+            # audio_signal[i].narrow(0, 0, s[0].size(0)).copy_(s[0])
             audio_lengths.append(s[1])
         audio_lengths = torch.tensor(audio_lengths, dtype=torch.long)
 
