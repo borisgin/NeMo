@@ -14,18 +14,17 @@ repeat:  &rep  1
 #        weight_decay: 0.005
 
 AudioToTextDataLayer:
+    sample_rate:  *sr
+    trim_silence: true
+    normalize_transcripts: true
+    collate_mode: "repeat"
+
     train:
-        sample_rate:  *sr
-        trim_silence: &ts true
-        normalize_transcripts: &nt true
         shuffle: true
         max_duration: 16.7
         drop_last: true
 
     eval:
-        sample_rate: *sr
-        trim_silence: *ts
-        normalize_transcripts: *nt
         shuffle: false
         max_duration: null
         drop_last: false
@@ -45,6 +44,12 @@ AudioPreprocessing:
 
 JasperEncoder:
     activation: "relu"
+    normalization_mode: "batch"
+#    normalization_mode: "layer"
+#    normalization_mode: "instance"
+#    normalization_mode: "group"
+    norm_groups:  1
+
     jasper:
         - filters: 128
           repeat: 1

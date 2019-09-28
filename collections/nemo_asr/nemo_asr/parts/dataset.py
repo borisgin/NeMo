@@ -6,20 +6,45 @@ from torch.utils.data import Dataset
 from .manifest import Manifest
 
 
-def seq_collate_fn(batch):
-    def find_max_len(seq, index):
-        max_len = -1
-        for item in seq:
-            if item[index].size(0) > max_len:
-                max_len = item[index].size(0)
-        return max_len
+def find_max_len(seq, index):
+    max_len = -1
+    for item in seq:
+        if item[index].size(0) > max_len:
+            max_len = item[index].size(0)
+    return max_len
 
+
+def seq_collate_fn(batch):
     batch_size = len(batch)
 
     audio_signal, audio_lengths = None, None
     if batch[0][0] is not None:
         max_audio_len = find_max_len(batch, 0)
+        audio_signal = torch.zeros(batch_size, max_audio_len,
+                                   dtype=torch.float)
+        audio_lengths = []
+        for i, s in enumerate(batch):
+            audio_signal[i].narrow(0, 0, s[0].size(0)).copy_(s[0])
+            audio_lengths.append(s[1])
+        audio_lengths = torch.tensor(audio_lengths, dtype=torch.long)
 
+    max_transcript_len = find_max_len(batch, 2)
+    transcript = torch.zeros(batch_size, max_transcript_len, dtype=torch.long)
+    transcript_lengths = []
+    for i, s in enumerate(batch):
+        transcript[i].narrow(0, 0, s[2].size(0)).copy_(s[2])
+        transcript_lengths.append(s[3])
+    transcript_lengths = torch.tensor(transcript_lengths, dtype=torch.long)
+
+    return audio_signal, audio_lengths, transcript, transcript_lengths
+
+
+def collate_with_repeat_fn(batch):
+    batch_size = len(batch)
+
+    audio_signal, audio_lengths = None, None
+    if batch[0][0] is not None:
+        max_audio_len = find_max_len(batch, 0)
         audio_signal = torch.zeros(batch_size, max_audio_len,
                                    dtype=torch.float)
         audio_lengths = []
@@ -33,7 +58,6 @@ def seq_collate_fn(batch):
         audio_lengths = torch.tensor(audio_lengths, dtype=torch.long)
 
     max_transcript_len = find_max_len(batch, 2)
-
     transcript = torch.zeros(batch_size, max_transcript_len, dtype=torch.long)
     transcript_lengths = []
     for i, s in enumerate(batch):

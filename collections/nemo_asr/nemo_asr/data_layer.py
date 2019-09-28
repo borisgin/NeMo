@@ -9,7 +9,7 @@ from apex import amp
 from nemo.backends.pytorch.nm import DataLayerNM, TrainableNM, NonTrainableNM
 from nemo.core import Optimization, DeviceType
 from nemo.core.neural_types import *
-from .parts.dataset import AudioDataset, seq_collate_fn
+from .parts.dataset import AudioDataset, seq_collate_fn, collate_with_repeat_fn
 from .parts.features import FilterbankFeatures, WaveformFeaturizer
 from .parts.spectr_augment import SpecAugment, SpecCutout
 
@@ -100,6 +100,7 @@ transcript_n}
             drop_last=False,
             shuffle=True,
             num_workers=0,
+            collate_mode="zero",
             # perturb_config=None,
             **kwargs
     ):
@@ -123,10 +124,19 @@ transcript_n}
         else:
             sampler = None
 
+        # if collate_mode=="zero":
+        #     collate_fn = seq_collate_fn
+        # else:
+        #     collate_fn=collate_with_repeat_fn
+        #     print("Collate with repeat")
+
+        collate_fn = seq_collate_fn if collate_mode == "zero" else \
+            collate_with_repeat_fn
+
         self._dataloader = torch.utils.data.DataLoader(
             dataset=self._dataset,
             batch_size=batch_size,
-            collate_fn=seq_collate_fn,
+            collate_fn=collate_fn,
             drop_last=drop_last,
             shuffle=shuffle if sampler is None else False,
             sampler=sampler,
