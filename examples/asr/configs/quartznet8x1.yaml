@@ -37,7 +37,7 @@ JasperEncoder:
 #    normalization_mode: "batch"
 
     jasper:
-      - filters: 256
+      - filters: 128
         repeat: 1
         kernel: [15]
         stride: [1]
@@ -73,7 +73,7 @@ JasperEncoder:
         residual: true
         separable: true
 
-      - filters: 512
+      - filters: 256
         repeat: *rep
         kernel: [45]
         stride: [1]
