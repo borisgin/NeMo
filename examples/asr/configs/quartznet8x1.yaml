@@ -45,7 +45,7 @@ JasperEncoder:
         dropout: *drop
         residual: false
         separable: true
-
+      
       - filters: 256
         repeat: *rep
         kernel: [25]
