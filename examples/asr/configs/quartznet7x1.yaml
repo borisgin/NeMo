@@ -1,7 +1,8 @@
 model: "QuartzNet"
 sample_rate: 16000
 repeat:  &rep  1
-dropout: &drop 0.25
+dropout: &drop 0.0
+residual: &res false
 
 AudioToTextDataLayer:
     max_duration: 16.7
@@ -52,7 +53,7 @@ JasperEncoder:
         stride: [1]
         dilation: [1]
         dropout: *drop
-        residual: true
+        residual: *res
         separable: true
 
       - filters: 256
@@ -61,7 +62,7 @@ JasperEncoder:
         stride: [1]
         dilation: [1]
         dropout: *drop
-        residual: true
+        residual: *res
         separable: true
 
       - filters: 320
@@ -70,7 +71,7 @@ JasperEncoder:
         stride: [1]
         dilation: [1]
         dropout: *drop
-        residual: true
+        residual: *res
         separable: true
 
       - filters: 384
@@ -79,7 +80,7 @@ JasperEncoder:
         stride: [1]
         dilation: [1]
         dropout: *drop
-        residual: true
+        residual: *res
         separable: true
 
       - filters: 448
@@ -88,7 +89,7 @@ JasperEncoder:
         stride: [1]
         dilation: [1]
         dropout: *drop
-        residual: true
+        residual: *res
         separable: true
 
       - filters: 512
@@ -97,7 +98,7 @@ JasperEncoder:
         stride: [1]
         dilation: [1]
         dropout: *drop
-        residual: true
+        residual: *res
         separable: true
 
       - filters: 576
@@ -106,7 +107,7 @@ JasperEncoder:
         stride: [1]
         dilation: [1]
         dropout: *drop
-        residual: true
+        residual: *res
         separable: true
 
       - filters: 640
