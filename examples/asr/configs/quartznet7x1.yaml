@@ -5,7 +5,7 @@ dropout: &drop 0.0
 residual: &res false
 
 AudioToTextDataLayer:
-    max_duration: 16.7
+    max_duration: 24.0
     trim_silence: true
 
     train:
