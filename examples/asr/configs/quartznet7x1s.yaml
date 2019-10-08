@@ -1,0 +1,131 @@
+model: "QuartzNet"
+sample_rate: 16000
+repeat:  &rep  1
+dropout: &drop 0.1
+residual: &res true
+
+AudioToTextDataLayer:
+    max_duration: 24.0
+    trim_silence: true
+
+    train:
+        shuffle: true
+
+    eval:
+        shuffle: false
+        max_duration: null
+
+AudioPreprocessing:
+    window_size: 0.02
+    window_stride: 0.01
+    window: "hann"
+    normalize: "per_feature"
+    n_fft: 512
+    features: 40
+    feat_type: "logfbank"
+    dither: 0.00001
+    pad_to: 16
+    stft_conv: true
+
+SpectrogramAugmentation:
+    rect_masks: 5
+    rect_time: 50
+    rect_freq: 20
+
+JasperEncoder:
+    activation: "relu"
+    conv_mask: true
+#    normalization_mode: "batch"
+
+    jasper:
+      - filters: 128
+        repeat: 1
+        kernel: [13]
+        stride: [1]
+        dilation: [1]
+        dropout: *drop
+        residual: false
+        separable: true
+      
+      - filters: 160
+        repeat: *rep
+        kernel: [15]
+        stride: [1]
+        dilation: [1]
+        dropout: *drop
+        residual: *res
+        separable: true
+
+      - filters: 192
+        repeat: *rep
+        kernel: [17]
+        stride: [1]
+        dilation: [1]
+        dropout: *drop
+        residual: *res
+        separable: true
+
+      - filters: 224
+        repeat: *rep
+        kernel: [19]
+        stride: [1]
+        dilation: [1]
+        dropout: *drop
+        residual: *res
+        separable: true
+
+      - filters: 256
+        repeat: *rep
+        kernel: [21]
+        stride: [1]
+        dilation: [1]
+        dropout: *drop
+        residual: *res
+        separable: true
+
+      - filters: 288
+        repeat: *rep
+        kernel: [23]
+        stride: [1]
+        dilation: [1]
+        dropout: *drop
+        residual: *res
+        separable: true
+
+      - filters: 320
+        repeat: *rep
+        kernel: [25]
+        stride: [1]
+        dilation: [1]
+        dropout: *drop
+        residual: *res
+        separable: true
+
+      - filters: 352
+        repeat: *rep
+        kernel: [27]
+        stride: [1]
+        dilation: [1]
+        dropout: *drop
+        residual: *res
+        separable: true
+
+      - filters: 512
+        repeat: 1
+        kernel: [29]
+        stride: [1]
+        dilation: [1]
+        dropout: *drop
+        residual: false
+        separable: true
+
+      - filters: 1024
+        repeat: 1
+        kernel: [1]
+        stride: [1]
+        dilation: [1]
+        dropout: *drop
+        residual: false
+
+labels: [" ", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
+         "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "'"]
